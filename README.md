@@ -113,4 +113,7 @@ python -m build
 fixture 模拟 CLI、路由、相对导入、环和公开/私有符号；只作 AST 输入，不执行其中的假装饰器。
 模型生成用假模型测试。架构与失败恢复说明见 [docs/architecture.md](docs/architecture.md)。
 
+CI 默认使用 GitHub 托管 Ubuntu；可临时通过仓库变量 `REPO_TUTOR_RUNNER`（JSON 标签数组）指定自己的 runner。
+本轮托管任务因账号计费限制未启动，改用临时 macOS ARM64 self-hosted runner 运行 GitHub Actions；Linux 托管结果仍未验证。
+
 MIT License。Flask 的许可另见 [FLASK-LICENSE.txt](examples/flask/FLASK-LICENSE.txt)。

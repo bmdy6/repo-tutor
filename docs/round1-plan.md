@@ -14,10 +14,10 @@ Stack: Python 3.11+, stdlib ast/urllib/tomllib, jsonschema, official MCP Python 
 - MCP tools scan_repository, inspect_topology, verify_course are read-only with readOnlyHint, destructiveHint=false, openWorldHint=false.
 
 ## Work and evidence
-- [ ] Scanner + JSON Schema: fixture includes src layout, relative imports, public/private symbols, CLI, routes, cycles and unresolved calls. Test inventory, exact coordinates, source hashes, malformed/symlink handling.
-- [ ] Graph: test dependency-first order, SCCs and entry reachability. Keep unresolved calls visible.
-- [ ] Generation: model only names deterministic lesson groups and writes prose from bounded numbered excerpts. Fake model tests for outline ownership, bad output, budget, citations and unsafe output paths.
-- [ ] Verification: validate citation file/range/symbol and source drift; coverage counts only lesson body citations, not outline or inventory. Report uncited prose and missing mermaid separately.
-- [ ] CLI + MCP: exercise scan/plan/write/verify/all with fake model and real MCP stdio initialize/list/call; no model tools exposed over MCP.
-- [ ] Demo: Flask 3.1.2, scan entire default production scope, generate full outline and 3 real sample lessons, verify both sample and complete course; cap real API attempts at 30.
+- [x] Scanner + JSON Schema: fixture includes src layout, relative imports, public/private symbols, CLI, routes, cycles and unresolved calls. Test inventory, exact coordinates, source hashes, malformed/symlink handling.
+- [x] Graph: test dependency-first order, SCCs and entry reachability. Keep unresolved calls visible.
+- [x] Generation: model only names deterministic lesson groups and writes prose from bounded numbered excerpts. Fake model tests for outline ownership, bad output, budget, citations and unsafe output paths.
+- [x] Verification: validate citation file/range/symbol and source drift; coverage counts only lesson body citations, not outline or inventory. Report uncited prose and missing mermaid separately.
+- [x] CLI + MCP: exercise scan/plan/write/verify/all with fake model and real MCP stdio initialize/list/call; no model tools exposed over MCP.
+- [x] Demo: Flask 3.1.2, scan entire default production scope, generate full outline and 3 real sample lessons, verify both sample and complete course; cap real API attempts at 30.
 - [ ] Delivery: run pytest/build, leak/path checks, README 3-command real smoke; commit/push round1, PR, observe CI green; report links/limitations/counts; create DONE-r1 last.
