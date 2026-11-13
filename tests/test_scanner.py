@@ -62,3 +62,22 @@ def test_overloads_keep_unique_nodes_and_topology(tmp_path):
     ids = [n['id'] for n in inv['nodes']]
     assert len(set(ids)) == len(ids)
     assert {i for c in topology(inv)['components'] for i in c} == set(ids)
+
+
+def test_asgi_protocol_and_constructor_heuristics_respect_class_scope(tmp_path):
+    (tmp_path / 'asgi.py').write_text('''class App:
+    def __init__(self): pass
+    async def __call__(self, scope, receive, send): pass
+class _Internal:
+    def __init__(self): pass
+def factory():
+    def __init__(): pass
+    return __init__
+''')
+    inv = scan(tmp_path)
+    validate(inv, scan_schema())
+    nodes = {n['qualname']: n for n in inv['nodes']}
+    assert nodes['App.__call__']['entry'] == ['protocol']
+    assert nodes['App.__init__']['entry'] == ['constructor']
+    assert nodes['_Internal.__init__']['entry'] == []
+    assert nodes['factory.__init__']['entry'] == []

@@ -88,7 +88,9 @@
                 "route",
                 "cli",
                 "main",
-                "project-script"
+                "project-script",
+                "constructor",
+                "protocol"
               ]
             },
             "uniqueItems": true

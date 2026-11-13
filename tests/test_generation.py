@@ -19,8 +19,15 @@ class FakeModel:
         data = json.loads(prompt)
         if data['task'] == 'outline':
             return {'titles': [{'id': x['id'], 'title': '基础与入口'} for x in data['lessons']]}
-        return {'facts': [{'node_id': x['id'], 'claim': '阅读定义并追踪这里展示的返回值。'}
-                          for x in data['evidence']]}
+        ids = [x['id'] for x in data['evidence'][:2]]
+        sections = ['system', 'entries', 'modules', 'lifecycle'] if data['kind'] == 'overview' else ['flow'] * 3
+        return {'goals': ['理解入口与职责', '沿源码追踪一次调用'],
+                'paragraphs': [{'section': section, 'text': '先从入口理解职责，再沿已解析的调用关系阅读实现。',
+                                'node_ids': ids} for section in sections],
+                'quiz': [{'question': '这里从哪里开始阅读？', 'answer': '从提供的入口定义开始。',
+                          'node_ids': ids} for _ in range(2)],
+                'transition': '接着观察依赖这些基础的流程。'}
+
 
 
 def test_fake_model_complete_course_and_budget_free_verification():
@@ -78,7 +85,9 @@ def test_overload_citations_cover_distinct_declarations(tmp_path):
     (tmp_path / 'm.py').write_text(source)
     lesson = '\n'.join(f'- Declaration [convert](m.py:{line}).' for line in (3, 5, 6))
     lesson += '\n```mermaid\nflowchart TD\n a[convert]\n```\n'
-    assert verify(tmp_path, scan(tmp_path), {'01.md': lesson})['passed']
+    report = verify(tmp_path, scan(tmp_path), {'01.md': lesson})
+    assert report['coverage']['covered'] == 3
+    assert report['citations']['invalid'] == []
 
 
 def test_transport_request_and_ledger_never_store_key(tmp_path):
@@ -112,3 +121,73 @@ def test_json_atomic_save_does_not_follow_predictable_temporary_symlink(tmp_path
     (tmp_path / 'usage.tmp').symlink_to(victim)
     save_json(tmp_path / 'usage.json', {'attempts': 1})
     assert victim.read_text() == 'keep'
+
+
+def test_course_is_connected_prose_with_overview_table_quiz_and_transition():
+    inv = scan(FIXTURE)
+    model = FakeModel()
+    plan = make_plan(inv, model, Config())
+    for item in plan['lessons']:
+        text = write_lesson(FIXTURE, inv, plan, item['id'], model, Config())
+        for heading in ('## 学习目标', '## 按调用顺序理解', '## 关键符号速查', '## 自测题', '## 下一课'):
+            assert heading in text
+        prose = text.split('## 按调用顺序理解')[1].split('## 关键符号速查')[0]
+        assert not any(line.startswith('- **') for line in prose.splitlines())
+        assert text.count('答案：') == 2
+        assert '```mermaid' in text
+        if item['kind'] == 'overview':
+            for heading in ('### 系统做什么', '### 有哪些入口', '### 模块地图', '### 一次典型调用的生命周期'):
+                assert heading in text
+            assert '静态推断' in text
+
+
+@pytest.mark.parametrize('field', ['goals', 'paragraphs', 'quiz', 'transition'])
+def test_malformed_course_sections_rejected(field):
+    class Bad(FakeModel):
+        def complete(self, prompt):
+            value = super().complete(prompt)
+            if json.loads(prompt)['task'] == 'lesson':
+                value[field] = []
+            return value
+    model = Bad()
+    inv = scan(FIXTURE)
+    plan = make_plan(inv, model, Config())
+    with pytest.raises(ValueError):
+        write_lesson(FIXTURE, inv, plan, '00', model, Config())
+
+
+def test_model_cannot_cite_a_node_outside_evidence():
+    class Invented(FakeModel):
+        def complete(self, prompt):
+            value = super().complete(prompt)
+            if json.loads(prompt)['task'] == 'lesson':
+                value['paragraphs'][0]['node_ids'] = ['invented.py::fake@1']
+            return value
+    model = Invented()
+    inv = scan(FIXTURE)
+    plan = make_plan(inv, model, Config())
+    with pytest.raises(ValueError, match='evidence'):
+        write_lesson(FIXTURE, inv, plan, '00', model, Config())
+
+
+def test_source_drift_stops_generation_before_model_call(tmp_path):
+    path = tmp_path / 'm.py'
+    path.write_text('def start(): return 1\n')
+    inv = scan(tmp_path)
+    model = FakeModel()
+    plan = make_plan(inv, model, Config())
+    path.write_text('def start(): return 2\n')
+    with pytest.raises(ValueError, match='source changed'):
+        write_lesson(tmp_path, inv, plan, '00', model, Config())
+    assert model.calls == 1
+
+
+def test_no_entry_overview_explains_missing_lifecycle(tmp_path):
+    (tmp_path / 'm.py').write_text('def library_api():\n    """Normalize a value for callers."""\n    return 1\n')
+    inv = scan(tmp_path)
+    model = FakeModel()
+    plan = make_plan(inv, model, Config())
+    assert plan['lessons'][0]['lifecycle'] is None
+    text = write_lesson(tmp_path, inv, plan, '00', model, Config())
+    assert '未识别入口' in text
+    assert '无法推导入口生命周期' in text

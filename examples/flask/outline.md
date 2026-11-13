@@ -1,71 +1,69 @@
 # 课程大纲
 
-> 静态依赖优先。循环依赖组内仅使用稳定顺序；成员可能跨课，不能理解成严格先修关系。
+> 模块与入口可达流程分组；调用/继承依赖优先。00 为全局导读。
 
-## 01 · 应用与蓝图的基础配置方法
+> 同一循环依赖 cohort 内是共同先修，稳定顺序不代表严格依赖顺序。
 
-- [Flask.async_to_sync](src/flask/app.py:980)
-- [Flask.create_jinja_environment](src/flask/app.py:385)
-- [Flask.create_url_adapter](src/flask/app.py:425)
-- [Flask.get_send_file_max_age](src/flask/app.py:281)
-- [Flask.log_exception](src/flask/app.py:864)
-- [Flask.make_default_options_response](src/flask/app.py:953)
-- [Flask.make_response](src/flask/app.py:1129)
-- [Flask.make_shell_context](src/flask/app.py:534)
-- [Flask.open_instance_resource](src/flask/app.py:363)
-- [Flask.open_resource](src/flask/app.py:330)
-- [Blueprint.get_send_file_max_age](src/flask/blueprints.py:55)
-- [Blueprint.open_resource](src/flask/blueprints.py:104)
-- [AppGroup.command](src/flask/cli.py:413)
-- [AppGroup.group](src/flask/cli.py:429)
-- [AppGroup](src/flask/cli.py:405)
-- [CertParamType.convert](src/flask/cli.py:799)
-- [CertParamType](src/flask/cli.py:788)
-- [FlaskGroup.parse_args](src/flask/cli.py:686)
-- [NoAppException](src/flask/cli.py:37)
-- [ScriptInfo](src/flask/cli.py:293)
-- [SeparatedPathType.convert](src/flask/cli.py:881)
-- [SeparatedPathType](src/flask/cli.py:875)
-- [get_version](src/flask/cli.py:267)
-- [load_dotenv](src/flask/cli.py:706)
+分组规则：Cluster by module, splitting route/protocol reachable subgraphs using nearest entry (distance, stable ID tie-break). Constructors/CLI remain with their module feature. Imports describe the module map; lesson prerequisites use call/inherit edges. Order quotient SCC cohorts dependency-first; cycles are co-requisites in stable cluster order. Soft size limit never splits a node SCC. Reading DFS uses call-site source order; static reachability is not runtime execution order.
 
-## 02 · CLI 定位应用、配置加载与上下文对象
+## 00 · Flask 全局导览：WSGI 应用、请求生命周期与模块分工
 
-- [locate_app](src/flask/cli.py:230)
-- [locate_app](src/flask/cli.py:236)
-- [main](src/flask/cli.py:1130)
-- [prepare_import](src/flask/cli.py:200)
-- [routes_command](src/flask/cli.py:1069)
-- [shell_command](src/flask/cli.py:1009)
-- [show_server_banner](src/flask/cli.py:774)
-- [with_appcontext.decorator](src/flask/cli.py:395)
-- [with_appcontext](src/flask/cli.py:380)
+系统用途 → 入口 → 模块地图 → 一次典型调用（静态推断）。
+
+
+## 01 · 配置装载：从对象、文件与环境变量填充 Config
+
+模块：flask.config；cohort 0；共同先修：False；功能分组第 1 部分。
+
+- [Config.__init__](src/flask/config.py:94)
 - [Config.from_mapping](src/flask/config.py:304)
 - [Config.from_object](src/flask/config.py:218)
 - [Config.from_prefixed_env](src/flask/config.py:126)
 - [Config.get_namespace](src/flask/config.py:323)
 - [Config](src/flask/config.py:50)
+- [ConfigAttribute.__init__](src/flask/config.py:23)
 - [ConfigAttribute](src/flask/config.py:20)
+- [Config.from_file](src/flask/config.py:256)
+- [Config.from_pyfile](src/flask/config.py:187)
+- [Config.from_envvar](src/flask/config.py:102)
+
+## 02 · 应用与请求上下文：压栈、绑定与弹出
+
+模块：flask.ctx；cohort 1；共同先修：False；功能分组第 1 部分。
+
+- [AppContext.__init__](src/flask/ctx.py:245)
 - [AppContext.pop](src/flask/ctx.py:256)
 - [AppContext.push](src/flask/ctx.py:251)
 - [AppContext](src/flask/ctx.py:238)
+- [RequestContext.__init__](src/flask/ctx.py:309)
 - [RequestContext.copy](src/flask/ctx.py:337)
 - [RequestContext.match_request](src/flask/ctx.py:357)
 - [RequestContext.pop](src/flask/ctx.py:396)
 - [RequestContext](src/flask/ctx.py:287)
 - [after_this_request](src/flask/ctx.py:117)
 - [copy_current_request_context.wrapper](src/flask/ctx.py:189)
-
-## 03 · 上下文检测、调试辅助与常用请求工具
-
 - [copy_current_request_context](src/flask/ctx.py:155)
 - [has_app_context](src/flask/ctx.py:228)
 - [has_request_context](src/flask/ctx.py:196)
+- [RequestContext.push](src/flask/ctx.py:367)
+
+## 03 · 调试辅助：把常见误用转化为可读错误
+
+模块：flask.debughelpers；cohort 2；共同先修：False；功能分组第 1 部分。
+
+- [DebugFilesKeyError.__init__](src/flask/debughelpers.py:28)
 - [DebugFilesKeyError](src/flask/debughelpers.py:23)
+- [FormDataRoutingRedirect.__init__](src/flask/debughelpers.py:57)
 - [FormDataRoutingRedirect](src/flask/debughelpers.py:50)
 - [UnexpectedUnicodeError](src/flask/debughelpers.py:17)
 - [attach_enctype_error_multidict.newcls](src/flask/debughelpers.py:90)
 - [attach_enctype_error_multidict](src/flask/debughelpers.py:81)
+- [explain_template_loading_attempts](src/flask/debughelpers.py:124)
+
+## 04 · 响应与工具函数：make_response、url_for 与流式上下文
+
+模块：flask.helpers；cohort 4；共同先修：False；功能分组第 1 部分。
+
 - [abort](src/flask/helpers.py:273)
 - [flash](src/flask/helpers.py:318)
 - [get_debug_flag](src/flask/helpers.py:28)
@@ -80,19 +78,30 @@
 - [stream_with_context](src/flask/helpers.py:58)
 - [stream_with_context](src/flask/helpers.py:63)
 - [url_for](src/flask/helpers.py:195)
-- [dump](src/flask/json/__init__.py:47)
-- [dumps](src/flask/json/__init__.py:13)
+- [send_file](src/flask/helpers.py:407)
+- [send_from_directory](src/flask/helpers.py:533)
 
-## 04 · JSON 序列化入口与标签类型基础
+## 05 · JSON 提供者：序列化与反序列化的可替换实现
 
-- [jsonify](src/flask/json/__init__.py:138)
-- [load](src/flask/json/__init__.py:108)
-- [loads](src/flask/json/__init__.py:77)
+模块：flask.json.provider；cohort 5；共同先修：False；功能分组第 1 部分。
+
 - [DefaultJSONProvider.dumps](src/flask/json/provider.py:166)
 - [DefaultJSONProvider.loads](src/flask/json/provider.py:181)
+- [JSONProvider.__init__](src/flask/json/provider.py:38)
 - [JSONProvider.dumps](src/flask/json/provider.py:41)
 - [JSONProvider.loads](src/flask/json/provider.py:59)
 - [JSONProvider](src/flask/json/provider.py:19)
+- [DefaultJSONProvider.response](src/flask/json/provider.py:189)
+- [DefaultJSONProvider](src/flask/json/provider.py:124)
+- [JSONProvider.dump](src/flask/json/provider.py:49)
+- [JSONProvider.load](src/flask/json/provider.py:67)
+- [JSONProvider.response](src/flask/json/provider.py:89)
+
+## 06 · 标签化 JSON：为会话保留非 JSON 类型
+
+模块：flask.json.tag；cohort 6；共同先修：False；功能分组第 1 部分。
+
+- [JSONTag.__init__](src/flask/json/tag.py:69)
 - [JSONTag.check](src/flask/json/tag.py:73)
 - [JSONTag.to_json](src/flask/json/tag.py:77)
 - [JSONTag.to_python](src/flask/json/tag.py:82)
@@ -109,9 +118,6 @@
 - [TagDateTime.to_python](src/flask/json/tag.py:215)
 - [TagDict.check](src/flask/json/tag.py:103)
 - [TagDict.to_json](src/flask/json/tag.py:110)
-
-## 05 · 标签序列化器与日志、模板注册
-
 - [TagDict.to_python](src/flask/json/tag.py:114)
 - [TagMarkup.check](src/flask/json/tag.py:181)
 - [TagMarkup.to_json](src/flask/json/tag.py:184)
@@ -126,53 +132,115 @@
 - [TaggedJSONSerializer.tag](src/flask/json/tag.py:289)
 - [TaggedJSONSerializer.untag](src/flask/json/tag.py:297)
 - [TaggedJSONSerializer](src/flask/json/tag.py:219)
+- [JSONTag.tag](src/flask/json/tag.py:87)
+- [PassDict](src/flask/json/tag.py:119)
+- [PassList](src/flask/json/tag.py:147)
+- [TagBytes](src/flask/json/tag.py:159)
+- [TagDateTime](src/flask/json/tag.py:205)
+- [TagDict](src/flask/json/tag.py:93)
+- [TagMarkup](src/flask/json/tag.py:173)
+- [TagTuple](src/flask/json/tag.py:133)
+- [TagUUID](src/flask/json/tag.py:191)
+- [TaggedJSONSerializer.__init__](src/flask/json/tag.py:249)
+- [TaggedJSONSerializer.dumps](src/flask/json/tag.py:321)
+- [TaggedJSONSerializer.loads](src/flask/json/tag.py:325)
+
+## 07 · JSON 门面：在应用上下文下委派到 provider
+
+模块：flask.json；cohort 7；共同先修：False；功能分组第 1 部分。
+
+- [dump](src/flask/json/__init__.py:47)
+- [dumps](src/flask/json/__init__.py:13)
+- [jsonify](src/flask/json/__init__.py:138)
+- [load](src/flask/json/__init__.py:108)
+- [loads](src/flask/json/__init__.py:77)
+
+## 08 · 日志配置：为应用创建并挂接日志器
+
+模块：flask.logging；cohort 8；共同先修：False；功能分组第 1 部分。
+
 - [has_level_handler](src/flask/logging.py:31)
 - [wsgi_errors_stream](src/flask/logging.py:16)
-- [App.add_template_filter](src/flask/sansio/app.py:686)
-- [App.add_template_global](src/flask/sansio/app.py:765)
-- [App.add_template_test](src/flask/sansio/app.py:727)
-- [App.create_jinja_environment](src/flask/sansio/app.py:479)
-- [App.debug](src/flask/sansio/app.py:550)
-- [App.debug](src/flask/sansio/app.py:563)
-- [App.handle_url_build_error](src/flask/sansio/app.py:932)
-- [App.iter_blueprints](src/flask/sansio/app.py:597)
+- [create_logger](src/flask/logging.py:58)
 
-## 06 · 应用对象的核心属性与注册方法
+## 09 · 类视图：as_view 生成视图函数并按方法分派
 
-- [App.make_aborter](src/flask/sansio/app.py:498)
-- [App.name](src/flask/sansio/app.py:426)
-- [App.redirect](src/flask/sansio/app.py:893)
-- [App.register_blueprint](src/flask/sansio/app.py:570)
-- [App.select_jinja_autoescape](src/flask/sansio/app.py:536)
-- [App.shell_context_processor](src/flask/sansio/app.py:813)
-- [App.should_ignore_error](src/flask/sansio/app.py:883)
-- [App.teardown_appcontext](src/flask/sansio/app.py:779)
-- [App.template_filter.decorator](src/flask/sansio/app.py:679)
-- [App.template_filter](src/flask/sansio/app.py:664)
-- [App.template_global.decorator](src/flask/sansio/app.py:758)
-- [App.template_global](src/flask/sansio/app.py:741)
-- [App.template_test.decorator](src/flask/sansio/app.py:720)
-- [App.template_test](src/flask/sansio/app.py:698)
-- [App.trap_http_exception](src/flask/sansio/app.py:848)
-- [Blueprint.add_app_template_filter.register_template](src/flask/sansio/blueprints.py:472)
-- [Blueprint.add_app_template_global.register_template](src/flask/sansio/blueprints.py:548)
-- [Blueprint.add_app_template_test.register_template](src/flask/sansio/blueprints.py:510)
-- [Blueprint.app_errorhandler.decorator.from_blueprint](src/flask/sansio/blueprints.py:604)
-- [Blueprint.app_errorhandler.decorator](src/flask/sansio/blueprints.py:603)
-- [Blueprint.app_errorhandler](src/flask/sansio/blueprints.py:596)
-- [Blueprint.app_template_filter.decorator](src/flask/sansio/blueprints.py:454)
-- [Blueprint.app_template_filter](src/flask/sansio/blueprints.py:444)
-- [Blueprint.app_template_global.decorator](src/flask/sansio/blueprints.py:528)
+模块：flask.views；cohort 11；共同先修：False；功能分组第 1 部分。
 
-## 07 · 蓝图注册、脚手架与请求钩子
+- [MethodView.dispatch_request](src/flask/views.py:182)
+- [View.as_view.view](src/flask/views.py:106)
+- [View.as_view.view](src/flask/views.py:115)
+- [View.as_view](src/flask/views.py:86)
+- [View.dispatch_request](src/flask/views.py:78)
+- [View](src/flask/views.py:16)
+- [MethodView](src/flask/views.py:138)
 
-- [Blueprint.app_template_global](src/flask/sansio/blueprints.py:516)
-- [Blueprint.app_template_test.decorator](src/flask/sansio/blueprints.py:490)
-- [Blueprint.app_template_test](src/flask/sansio/blueprints.py:478)
-- [Blueprint.record](src/flask/sansio/blueprints.py:224)
-- [Blueprint.record_once.wrapper](src/flask/sansio/blueprints.py:240)
-- [Blueprint.register_blueprint](src/flask/sansio/blueprints.py:256)
-- [BlueprintSetupState](src/flask/sansio/blueprints.py:34)
+## 10 · 请求处理主流程：从 wsgi_app 到 finalize_request
+
+模块：flask.app；cohort 13；共同先修：False；功能分组第 1 部分。
+
+- [Flask.async_to_sync](src/flask/app.py:980)
+- [Flask.log_exception](src/flask/app.py:864)
+- [Flask.make_default_options_response](src/flask/app.py:953)
+- [Flask.make_response](src/flask/app.py:1129)
+- [Flask.ensure_sync](src/flask/app.py:966)
+- [Flask.raise_routing_exception](src/flask/app.py:478)
+- [Flask.request_context](src/flask/app.py:1407)
+- [Flask.dispatch_request](src/flask/app.py:879)
+- [Flask.handle_http_exception](src/flask/app.py:744)
+- [Flask.preprocess_request](src/flask/app.py:1271)
+- [Flask.process_response](src/flask/app.py:1298)
+- [Flask.finalize_request](src/flask/app.py:922)
+- [Flask.handle_user_exception](src/flask/app.py:779)
+- [Flask.full_dispatch_request](src/flask/app.py:904)
+- [Flask.handle_exception](src/flask/app.py:811)
+- [Flask.wsgi_app](src/flask/app.py:1479)
+- [Flask.__call__](src/flask/app.py:1529)
+
+## 11 · 命令行入口：定位应用、加载命令并运行开发服务器
+
+模块：flask.cli；cohort 14；共同先修：False；功能分组第 1 部分。
+
+- [AppGroup.command](src/flask/cli.py:413)
+- [AppGroup.group](src/flask/cli.py:429)
+- [AppGroup](src/flask/cli.py:405)
+- [CertParamType.__init__](src/flask/cli.py:796)
+- [CertParamType.convert](src/flask/cli.py:799)
+- [CertParamType](src/flask/cli.py:788)
+- [FlaskGroup.__init__](src/flask/cli.py:563)
+- [FlaskGroup.parse_args](src/flask/cli.py:686)
+- [NoAppException](src/flask/cli.py:37)
+- [ScriptInfo](src/flask/cli.py:293)
+- [SeparatedPathType.convert](src/flask/cli.py:881)
+- [SeparatedPathType](src/flask/cli.py:875)
+- [get_version](src/flask/cli.py:267)
+- [load_dotenv](src/flask/cli.py:706)
+- [locate_app](src/flask/cli.py:230)
+- [locate_app](src/flask/cli.py:236)
+- [main](src/flask/cli.py:1130)
+- [prepare_import](src/flask/cli.py:200)
+- [routes_command](src/flask/cli.py:1069)
+- [shell_command](src/flask/cli.py:1009)
+- [show_server_banner](src/flask/cli.py:774)
+- [with_appcontext.decorator](src/flask/cli.py:395)
+- [with_appcontext](src/flask/cli.py:380)
+- [<main@1134>](src/flask/cli.py:1134)
+- [AppGroup.command.decorator](src/flask/cli.py:422)
+- [FlaskGroup.get_command](src/flask/cli.py:617)
+- [FlaskGroup.list_commands](src/flask/cli.py:644)
+- [FlaskGroup.make_context](src/flask/cli.py:665)
+- [FlaskGroup](src/flask/cli.py:531)
+- [ScriptInfo.__init__](src/flask/cli.py:305)
+- [find_app_by_string](src/flask/cli.py:120)
+- [find_best_app](src/flask/cli.py:41)
+- [run_command](src/flask/cli.py:943)
+- [locate_app](src/flask/cli.py:241)
+- [ScriptInfo.load_app](src/flask/cli.py:333)
+
+## 12 · Scaffold 基类：路由与回调注册的共享骨架
+
+模块：flask.sansio.scaffold；cohort 15；共同先修：False；功能分组第 1 部分。
+
 - [Scaffold.add_url_rule](src/flask/sansio/scaffold.py:368)
 - [Scaffold.after_request](src/flask/sansio/scaffold.py:487)
 - [Scaffold.before_request](src/flask/sansio/scaffold.py:460)
@@ -190,14 +258,25 @@
 - [Scaffold.static_url_path](src/flask/sansio/scaffold.py:249)
 - [Scaffold.static_url_path](src/flask/sansio/scaffold.py:265)
 - [Scaffold.teardown_request](src/flask/sansio/scaffold.py:508)
-
-## 08 · URL 预处理、会话接口与 Cookie 配置
-
 - [Scaffold.url_defaults](src/flask/sansio/scaffold.py:584)
 - [Scaffold.url_value_preprocessor](src/flask/sansio/scaffold.py:559)
 - [Scaffold](src/flask/sansio/scaffold.py:52)
 - [setupmethod.wrapper_func](src/flask/sansio/scaffold.py:45)
 - [setupmethod](src/flask/sansio/scaffold.py:42)
+- [Scaffold.__init__](src/flask/sansio/scaffold.py:75)
+- [Scaffold.register_error_handler](src/flask/sansio/scaffold.py:642)
+- [find_package](src/flask/sansio/scaffold.py:754)
+- [Scaffold.delete](src/flask/sansio/scaffold.py:320)
+- [Scaffold.get](src/flask/sansio/scaffold.py:296)
+- [Scaffold.patch](src/flask/sansio/scaffold.py:328)
+- [Scaffold.post](src/flask/sansio/scaffold.py:304)
+- [Scaffold.put](src/flask/sansio/scaffold.py:312)
+
+## 13 · 会话接口：签名 Cookie 会话的打开与保存
+
+模块：flask.sessions；cohort 16；共同先修：False；功能分组第 1 部分。
+
+- [SecureCookieSession.__init__](src/flask/sessions.py:74)
 - [SecureCookieSession.get](src/flask/sessions.py:88)
 - [SecureCookieSession.setdefault](src/flask/sessions.py:92)
 - [SecureCookieSessionInterface.get_signing_serializer](src/flask/sessions.py:317)
@@ -217,24 +296,32 @@
 - [SessionInterface](src/flask/sessions.py:114)
 - [SessionMixin.permanent](src/flask/sessions.py:28)
 - [SessionMixin.permanent](src/flask/sessions.py:33)
-
-## 09 · 模板加载、测试客户端与类视图
-
 - [SessionMixin](src/flask/sessions.py:24)
+- [SecureCookieSession](src/flask/sessions.py:52)
+- [SecureCookieSessionInterface.open_session](src/flask/sessions.py:337)
+- [SecureCookieSessionInterface.save_session](src/flask/sessions.py:351)
+- [SecureCookieSessionInterface](src/flask/sessions.py:298)
+- [NullSession](src/flask/sessions.py:97)
+
+## 14 · 模板渲染：分发式加载器与渲染入口
+
+模块：flask.templating；cohort 17；共同先修：False；功能分组第 1 部分。
+
+- [DispatchingJinjaLoader.__init__](src/flask/templating.py:57)
 - [DispatchingJinjaLoader.list_templates](src/flask/templating.py:111)
 - [DispatchingJinjaLoader](src/flask/templating.py:52)
+- [Environment.__init__](src/flask/templating.py:45)
 - [Environment](src/flask/templating.py:39)
-- [EnvironBuilder.json_dumps](src/flask/testing.py:88)
-- [EnvironBuilder](src/flask/testing.py:27)
-- [FlaskCliRunner](src/flask/testing.py:265)
-- [FlaskClient.session_transaction](src/flask/testing.py:136)
-- [FlaskClient](src/flask/testing.py:109)
-- [MethodView.dispatch_request](src/flask/views.py:182)
-- [View.as_view.view](src/flask/views.py:106)
-- [View.as_view.view](src/flask/views.py:115)
-- [View.as_view](src/flask/views.py:86)
-- [View.dispatch_request](src/flask/views.py:78)
-- [View](src/flask/views.py:16)
+- [render_template](src/flask/templating.py:138)
+- [render_template_string](src/flask/templating.py:153)
+- [stream_template](src/flask/templating.py:188)
+- [stream_template_string](src/flask/templating.py:207)
+- [DispatchingJinjaLoader.get_source](src/flask/templating.py:60)
+
+## 15 · 请求与响应包装：端点信息与大小限制
+
+模块：flask.wrappers；cohort 18；共同先修：False；功能分组第 1 部分。
+
 - [Request.blueprint](src/flask/wrappers.py:162)
 - [Request.endpoint](src/flask/wrappers.py:147)
 - [Request.max_content_length](src/flask/wrappers.py:60)
@@ -244,99 +331,75 @@
 - [Request.max_form_parts](src/flask/wrappers.py:120)
 - [Request.max_form_parts](src/flask/wrappers.py:143)
 - [Request.on_json_loading_failed](src/flask/wrappers.py:212)
-
-## 10 · 请求响应包装、应用上下文与 CLI 组
-
 - [Request](src/flask/wrappers.py:18)
 - [Response.max_cookie_size](src/flask/wrappers.py:247)
 - [Response](src/flask/wrappers.py:222)
-- [Flask.app_context](src/flask/app.py:1386)
-- [Flask.ensure_sync](src/flask/app.py:966)
-- [Flask.raise_routing_exception](src/flask/app.py:478)
-- [Flask.request_context](src/flask/app.py:1407)
-- [Flask.run](src/flask/app.py:546)
-- [Flask.test_cli_runner](src/flask/app.py:727)
-- [Flask.test_client](src/flask/app.py:669)
-- [Flask.url_for](src/flask/app.py:1003)
-- [<main@1134>](src/flask/cli.py:1134)
-- [AppGroup.command.decorator](src/flask/cli.py:422)
-- [FlaskGroup.get_command](src/flask/cli.py:617)
-- [FlaskGroup.list_commands](src/flask/cli.py:644)
-- [FlaskGroup.make_context](src/flask/cli.py:665)
-- [FlaskGroup](src/flask/cli.py:531)
-- [find_app_by_string](src/flask/cli.py:120)
-- [find_best_app](src/flask/cli.py:41)
-- [run_command](src/flask/cli.py:943)
-- [Config.from_file](src/flask/config.py:256)
-- [Config.from_pyfile](src/flask/config.py:187)
-- [RequestContext.push](src/flask/ctx.py:367)
-- [explain_template_loading_attempts](src/flask/debughelpers.py:124)
+- [Request.blueprints](src/flask/wrappers.py:181)
 
-## 11 · 文件发送、JSON 提供者与日志创建
+## 16 · 应用对象构建：初始化、蓝图注册与 Jinja 环境
 
-- [send_file](src/flask/helpers.py:407)
-- [send_from_directory](src/flask/helpers.py:533)
-- [DefaultJSONProvider.response](src/flask/json/provider.py:189)
-- [DefaultJSONProvider](src/flask/json/provider.py:124)
-- [JSONProvider.dump](src/flask/json/provider.py:49)
-- [JSONProvider.load](src/flask/json/provider.py:67)
-- [JSONProvider.response](src/flask/json/provider.py:89)
-- [JSONTag.tag](src/flask/json/tag.py:87)
-- [PassDict](src/flask/json/tag.py:119)
-- [PassList](src/flask/json/tag.py:147)
-- [TagBytes](src/flask/json/tag.py:159)
-- [TagDateTime](src/flask/json/tag.py:205)
-- [TagDict](src/flask/json/tag.py:93)
-- [TagMarkup](src/flask/json/tag.py:173)
-- [TagTuple](src/flask/json/tag.py:133)
-- [TagUUID](src/flask/json/tag.py:191)
-- [TaggedJSONSerializer.dumps](src/flask/json/tag.py:321)
-- [create_logger](src/flask/logging.py:58)
+模块：flask.sansio.app；cohort 20；共同先修：False；功能分组第 1 部分。
+
+- [App.add_template_filter](src/flask/sansio/app.py:686)
+- [App.add_template_global](src/flask/sansio/app.py:765)
+- [App.add_template_test](src/flask/sansio/app.py:727)
+- [App.create_jinja_environment](src/flask/sansio/app.py:479)
+- [App.debug](src/flask/sansio/app.py:550)
+- [App.debug](src/flask/sansio/app.py:563)
+- [App.handle_url_build_error](src/flask/sansio/app.py:932)
+- [App.iter_blueprints](src/flask/sansio/app.py:597)
+- [App.make_aborter](src/flask/sansio/app.py:498)
+- [App.name](src/flask/sansio/app.py:426)
+- [App.redirect](src/flask/sansio/app.py:893)
+- [App.register_blueprint](src/flask/sansio/app.py:570)
+- [App.select_jinja_autoescape](src/flask/sansio/app.py:536)
+- [App.shell_context_processor](src/flask/sansio/app.py:813)
+- [App.should_ignore_error](src/flask/sansio/app.py:883)
+- [App.teardown_appcontext](src/flask/sansio/app.py:779)
+- [App.template_filter.decorator](src/flask/sansio/app.py:679)
+- [App.template_filter](src/flask/sansio/app.py:664)
+- [App.template_global.decorator](src/flask/sansio/app.py:758)
+- [App.template_global](src/flask/sansio/app.py:741)
+- [App.template_test.decorator](src/flask/sansio/app.py:720)
+- [App.template_test](src/flask/sansio/app.py:698)
+- [App.trap_http_exception](src/flask/sansio/app.py:848)
 - [App.add_url_rule](src/flask/sansio/app.py:605)
 - [App.create_global_jinja_loader](src/flask/sansio/app.py:523)
 - [App.inject_url_defaults](src/flask/sansio/app.py:911)
 - [App.jinja_env](src/flask/sansio/app.py:470)
 - [App.make_config](src/flask/sansio/app.py:482)
 - [App](src/flask/sansio/app.py:59)
+- [App.auto_find_instance_path](src/flask/sansio/app.py:510)
+- [App.logger](src/flask/sansio/app.py:443)
+- [App.__init__](src/flask/sansio/app.py:282)
 
-## 12 · 蓝图规则、会话实现与请求分发
+## 17 · 蓝图机制：延迟记录与注册时展开
 
+模块：flask.sansio.blueprints；cohort 21；共同先修：False；功能分组第 1 部分。
+
+- [Blueprint.__init__](src/flask/sansio/blueprints.py:174)
+- [Blueprint.add_app_template_filter.register_template](src/flask/sansio/blueprints.py:472)
+- [Blueprint.add_app_template_global.register_template](src/flask/sansio/blueprints.py:548)
+- [Blueprint.add_app_template_test.register_template](src/flask/sansio/blueprints.py:510)
+- [Blueprint.app_errorhandler.decorator.from_blueprint](src/flask/sansio/blueprints.py:604)
+- [Blueprint.app_errorhandler.decorator](src/flask/sansio/blueprints.py:603)
+- [Blueprint.app_errorhandler](src/flask/sansio/blueprints.py:596)
+- [Blueprint.app_template_filter.decorator](src/flask/sansio/blueprints.py:454)
+- [Blueprint.app_template_filter](src/flask/sansio/blueprints.py:444)
+- [Blueprint.app_template_global.decorator](src/flask/sansio/blueprints.py:528)
+- [Blueprint.app_template_global](src/flask/sansio/blueprints.py:516)
+- [Blueprint.app_template_test.decorator](src/flask/sansio/blueprints.py:490)
+- [Blueprint.app_template_test](src/flask/sansio/blueprints.py:478)
+- [Blueprint.record](src/flask/sansio/blueprints.py:224)
+- [Blueprint.record_once.wrapper](src/flask/sansio/blueprints.py:240)
+- [Blueprint.register_blueprint](src/flask/sansio/blueprints.py:256)
+- [BlueprintSetupState.__init__](src/flask/sansio/blueprints.py:41)
+- [BlueprintSetupState](src/flask/sansio/blueprints.py:34)
 - [Blueprint.add_url_rule](src/flask/sansio/blueprints.py:413)
 - [Blueprint.make_setup_state](src/flask/sansio/blueprints.py:246)
 - [Blueprint.record_once](src/flask/sansio/blueprints.py:233)
 - [Blueprint](src/flask/sansio/blueprints.py:119)
 - [BlueprintSetupState.add_url_rule](src/flask/sansio/blueprints.py:87)
-- [Scaffold.register_error_handler](src/flask/sansio/scaffold.py:642)
-- [find_package](src/flask/sansio/scaffold.py:754)
-- [SecureCookieSession](src/flask/sessions.py:52)
-- [SecureCookieSessionInterface.open_session](src/flask/sessions.py:337)
-- [SecureCookieSessionInterface.save_session](src/flask/sessions.py:351)
-- [SecureCookieSessionInterface](src/flask/sessions.py:298)
-- [render_template](src/flask/templating.py:138)
-- [render_template_string](src/flask/templating.py:153)
-- [FlaskCliRunner.invoke](src/flask/testing.py:275)
-- [MethodView](src/flask/views.py:138)
-- [Request.blueprints](src/flask/wrappers.py:181)
-- [Flask.dispatch_request](src/flask/app.py:879)
-- [Flask.do_teardown_appcontext](src/flask/app.py:1360)
-- [Flask.do_teardown_request](src/flask/app.py:1326)
-- [Flask.handle_http_exception](src/flask/app.py:744)
-- [Flask.preprocess_request](src/flask/app.py:1271)
-- [Flask.process_response](src/flask/app.py:1298)
-- [Flask.send_static_file](src/flask/app.py:308)
-- [Flask.test_request_context](src/flask/app.py:1423)
-
-## 13 · 模板上下文、蓝图应用级钩子与路由快捷方法
-
-- [Flask.update_template_context](src/flask/app.py:506)
-- [Flask](src/flask/app.py:81)
-- [Blueprint.send_static_file](src/flask/blueprints.py:82)
-- [Blueprint](src/flask/blueprints.py:18)
-- [locate_app](src/flask/cli.py:241)
-- [Config.from_envvar](src/flask/config.py:102)
-- [TaggedJSONSerializer.loads](src/flask/json/tag.py:325)
-- [App.auto_find_instance_path](src/flask/sansio/app.py:510)
-- [App.logger](src/flask/sansio/app.py:443)
 - [Blueprint.add_app_template_filter](src/flask/sansio/blueprints.py:461)
 - [Blueprint.add_app_template_global](src/flask/sansio/blueprints.py:535)
 - [Blueprint.add_app_template_test](src/flask/sansio/blueprints.py:497)
@@ -347,27 +410,56 @@
 - [Blueprint.before_app_request](src/flask/sansio/blueprints.py:554)
 - [Blueprint.register](src/flask/sansio/blueprints.py:273)
 - [Blueprint.teardown_app_request](src/flask/sansio/blueprints.py:574)
-- [Scaffold.delete](src/flask/sansio/scaffold.py:320)
-- [Scaffold.get](src/flask/sansio/scaffold.py:296)
-- [Scaffold.patch](src/flask/sansio/scaffold.py:328)
-- [Scaffold.post](src/flask/sansio/scaffold.py:304)
-- [Scaffold.put](src/flask/sansio/scaffold.py:312)
 
-## 14 · 空会话、流式模板与请求分发流程
+## 18 · 测试工具：环境构建器、测试客户端与 CLI 运行器
 
-- [NullSession](src/flask/sessions.py:97)
-- [stream_template](src/flask/templating.py:188)
-- [stream_template_string](src/flask/templating.py:207)
+模块：flask.testing；cohort 22；共同先修：False；功能分组第 1 部分。
+
+- [EnvironBuilder.__init__](src/flask/testing.py:49)
+- [EnvironBuilder.json_dumps](src/flask/testing.py:88)
+- [EnvironBuilder](src/flask/testing.py:27)
+- [FlaskCliRunner.__init__](src/flask/testing.py:271)
+- [FlaskCliRunner](src/flask/testing.py:265)
+- [FlaskClient.session_transaction](src/flask/testing.py:136)
+- [FlaskClient](src/flask/testing.py:109)
+- [FlaskCliRunner.invoke](src/flask/testing.py:275)
+- [FlaskClient.__init__](src/flask/testing.py:125)
 - [FlaskClient.open](src/flask/testing.py:204)
-- [Flask.finalize_request](src/flask/app.py:922)
-- [Flask.handle_user_exception](src/flask/app.py:779)
-- [ScriptInfo.load_app](src/flask/cli.py:333)
-- [DispatchingJinjaLoader.get_source](src/flask/templating.py:60)
-- [Flask.full_dispatch_request](src/flask/app.py:904)
-- [Flask.handle_exception](src/flask/app.py:811)
-- [Flask.wsgi_app](src/flask/app.py:1479)
 
-## 循环依赖
+## 19 · Flask 构造与运行：初始化、资源访问与开发服务器
+
+模块：flask.app；cohort 23；共同先修：False；功能分组第 1 部分。
+
+- [Flask.create_jinja_environment](src/flask/app.py:385)
+- [Flask.create_url_adapter](src/flask/app.py:425)
+- [Flask.get_send_file_max_age](src/flask/app.py:281)
+- [Flask.make_shell_context](src/flask/app.py:534)
+- [Flask.open_instance_resource](src/flask/app.py:363)
+- [Flask.open_resource](src/flask/app.py:330)
+- [Flask.__init__](src/flask/app.py:226)
+- [Flask.app_context](src/flask/app.py:1386)
+- [Flask.run](src/flask/app.py:546)
+- [Flask.test_cli_runner](src/flask/app.py:727)
+- [Flask.test_client](src/flask/app.py:669)
+- [Flask.url_for](src/flask/app.py:1003)
+- [Flask.do_teardown_appcontext](src/flask/app.py:1360)
+- [Flask.do_teardown_request](src/flask/app.py:1326)
+- [Flask.send_static_file](src/flask/app.py:308)
+- [Flask.test_request_context](src/flask/app.py:1423)
+- [Flask.update_template_context](src/flask/app.py:506)
+- [Flask](src/flask/app.py:81)
+
+## 20 · 蓝图子类：静态文件与资源访问
+
+模块：flask.blueprints；cohort 24；共同先修：False；功能分组第 1 部分。
+
+- [Blueprint.get_send_file_max_age](src/flask/blueprints.py:55)
+- [Blueprint.open_resource](src/flask/blueprints.py:104)
+- [Blueprint.__init__](src/flask/blueprints.py:19)
+- [Blueprint.send_static_file](src/flask/blueprints.py:82)
+- [Blueprint](src/flask/blueprints.py:18)
+
+## 节点循环依赖
 
 ```json
 [

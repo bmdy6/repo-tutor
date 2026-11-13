@@ -1,40 +1,39 @@
-# Flask 固定版本演示
+# Flask 3.1.2：从全局导读到功能课程
 
-来源：<https://github.com/pallets/flask>，tag `3.1.2`，commit `2c1b30d0503cfb064f1cb252e6614a06915a362a`。
-扫描默认生产范围，tests、docs、examples 均排除；原始 checkout 不在本工具仓库内。
+源码来自 [pallets/flask](https://github.com/pallets/flask)，固定 tag `3.1.2`，commit `2c1b30d0503cfb064f1cb252e6614a06915a362a`。
+源码 checkout 位于工具仓库之外，不随示例分发。Flask 的许可见 [FLASK-LICENSE.txt](FLASK-LICENSE.txt)。
 
-本目录保存完整大纲与扫描快照，以及第 01、12、14 课。完整生成结果有 14 课，原始完整课文保存在演示运行目录。
-`verification.*` 对应这里的 3 课：59/323，缺少 264 节点，退出码为 1；
-`full-course-verification.*` 是完整 14 课运行时的校验快照：323/323，无效引用 0/323。
-仅拉取这 3 课不能复现完整课程的覆盖结果。覆盖完整 ≠ 讲对了，内容正确性需要人看。
+先看 [第 0 课](lessons/00.md)：系统用途、入口、模块地图与一次请求的生命周期。再看两节代表课：[请求分发](lessons/10.md)、[蓝图延迟记录与注册](lessons/17.md)。编号保留完整课程中的依赖顺序，因此这三个文件不是连续三课；“下一课”指向 [完整大纲](outline.md)中的后续课，未收录课文不会伪装成已有文件。
 
-`scan.json` 保留文件 SHA256 与源码清单；`topology.json` 包含 4 组循环依赖和 5 个入口的静态可达流程。
-`plan.json` 保存拓扑顺序与节点归属；`usage.json` 为真实调用账本，总计 17 次，无密钥和请求正文。
-前 2 次用于初版大纲和未采用的课文；修正节点身份、稳定排序和文本格式约束后，最终大纲 1 次、最终课文 14 次。
-API 请求成功不等于输出已通过渲染校验，账本按请求次数计。
+## 复现
 
-## 无模型复核样例
-
-从本工具仓库根目录运行：
+在安装好 repo-tutor、已配置 DeepSeek key 的环境中运行；key 仅从环境或显式配置消费，不会自动读取本机凭据仓库：
 
 ```bash
-git clone --depth 1 --branch 3.1.2 https://github.com/pallets/flask.git ../flask-3.1.2
-repo-tutor verify ../flask-3.1.2 --out examples/flask
+git clone --depth 1 --branch 3.1.2 https://github.com/pallets/flask.git flask-3.1.2
+REPO_TUTOR_NODES_PER_LESSON=48 REPO_TUTOR_MAX_CALLS=25 repo-tutor all flask-3.1.2 --out flask-course
 ```
 
-预期输出 `Covered 59/323; invalid citations 0; human review required`，预期退出码 `1`。
-报告会被本地重新生成。可用脚本读取 `scan.json`，逐项比较文件 SHA256。
+也可先 scan / plan，再按 `--lessons 00,10,17` 生成三个样例。只生成样例时，verify 会因完整课程覆盖不足返回 1；这个退出码不是样例的引用或结构错误。
 
-课文的 `src/flask/app.py:534` 以 Flask checkout 为根；对应的在线位置是：
-<https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/src/flask/app.py#L534>。
+本轮分组规则不含 Flask 专用名单：先按模块聚类，最近路由/协议入口的静态可达子图独立成组；构造器、CLI 与其模块的剩余功能合讲。调用/继承依赖决定课程拓扑，import 描述模块地图。每课软上限 48，SCC 不拆，得到 00 + 20 节功能课。节点归属与课内速查表按依赖排序，正文用入口优先、调用位置优先的阅读路径；两种顺序用途不同。
 
-## 重新生成完整课程
+## 结果与覆盖口径
 
-配置 DeepSeek key 后，从工具仓库根目录执行：
+- 24 个 Python 文件、439 个扫描节点；348 个关键节点（公开类/函数或入口）。相比第一轮的 323，多了 24 个公开类构造入口与 1 个协议入口。
+- 真实 API 请求 **23 次**：1 次大纲命名、1 次返回了错误任务格式而被拒绝的课文响应、21 次有效课文响应。失败的渲染也占预算；没有自动重试。
+- 请求模型 `deepseek-chat`，返回模型 `deepseek-flash`；[usage.json](usage.json)记录每次请求状态与用量。API 返回成功不代表课文结构已通过校验。
+- 完整 21 课：[校验快照](full-course-verification.md)，覆盖 **348/348**；讲解段落 **339**、仅速查表 **9**、仅其他位置 **0**；有效引用 **1158**、无效引用 **0**，漂移 **0**、结构问题 **0**。
+- 本目录 3 课：[子集校验](verification.md)，覆盖 **61/348**；讲解段落 **58**、仅速查表 **0**、仅目标/自测/衔接等其他位置 **3**；有效引用 **229**、无效引用 **0**，缺失节点 **287**。未声称子集覆盖完整。
 
-```bash
-repo-tutor all ../flask-3.1.2 --out ../flask-course-new
-```
+分类只统计关键节点，按“正文优先、严格仅表格、其余位置”的互斥口径计数；图中出现不算讲解覆盖。00 的模块引用可追溯，但模块节点不属于关键节点分母。
 
-使用默认设置会产生一次大纲请求和逐课请求；本目录的实测次数含前期调试，不是每次固定成本。
-模型输出不保证逐字相同；校验与覆盖检查可重复运行，不再调用模型。
+所有流程图由程序生成，节点以扫描身份的稳定哈希命名，声明与边端点回查 inventory。每课至少一张；00 另有模块图。流程图最多展示前 20 个阅读节点，静态路径不等于运行轨迹。
+
+## 内容审阅边界
+
+这些是模型实际生成的课文。代表课经源码抽查后，局部修正了 TYPE_CHECKING 导入、同应用内的首次蓝图注册、`finalize_request` 安全模式范围，以及上下文动态调用尚未解析的表述。图的选点与排布调整后，用已保存的真实响应重新渲染，没有额外模型请求；原始响应只留本地任务目录。完整课文其余语义未逐条人工审查，也未让真正的新人完成课程效果验收。
+
+**覆盖完整 ≠ 讲对了。** 引用有效、节点真实和图存在均不证明每句解释被源码充分支持。源码片段可能截断；继承方法、实例动态分派、回调、外部依赖与条件导入仍需人工核对。
+
+`path:line` 相对 Flask checkout，例如 [Flask.__call__](https://github.com/pallets/flask/blob/2c1b30d0503cfb064f1cb252e6614a06915a362a/src/flask/app.py#L1529)。本目录附扫描、大纲、v2 计划、拓扑和用量，便于复算；完整真实课文留在本轮任务目录。
