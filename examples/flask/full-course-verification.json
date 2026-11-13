@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "coverage": {
+    "total": 323,
+    "covered": 323,
+    "missing": []
+  },
+  "citations": {
+    "total": 323,
+    "invalid": []
+  },
+  "source_drift": [],
+  "lesson_issues": [],
+  "scan_diagnostics": [],
+  "human_review_required": true,
+  "disclaimer": "覆盖完整 ≠ 讲对了。引用有效仅表示文件、行号和附近符号有效；内容正确性需要人看。无引用段落检查是启发式，不能判断每个事实是否被证据支持。"
+}

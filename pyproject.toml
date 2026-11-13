@@ -1,0 +1,33 @@
+[build-system]
+requires = ["hatchling>=1.26,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "repo-tutor"
+version = "0.1.0"
+description = "Source-linked onboarding courses for unfamiliar Python repositories"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{name = "bmdy6"}]
+dependencies = ["jsonschema>=4.23,<5", "mcp>=1.12,<2"]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.3,<10", "build>=1.2,<2", "ruff>=0.11,<1"]
+
+[project.scripts]
+repo-tutor = "repo_tutor.cli:main"
+repo-tutor-mcp = "repo_tutor.server:main"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 110
+extend-exclude = ["tests/fixtures"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/repo_tutor"]

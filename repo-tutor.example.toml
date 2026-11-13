@@ -1,0 +1,13 @@
+[repo_tutor]
+base_url = "https://api.deepseek.com/v1"
+model = "deepseek-chat"
+# Put the key in REPO_TUTOR_API_KEY or DEEPSEEK_API_KEY, not this file.
+max_calls = 20
+max_output_tokens = 7000
+timeout = 180
+nodes_per_lesson = 24
+excerpt_lines = 45
+max_context_chars = 90000
+max_file_bytes = 1000000
+citation_proximity = 3
+excludes = [".git", ".venv", "venv", "__pycache__", "build", "dist", "tests", "docs", "examples"]

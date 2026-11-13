@@ -1,0 +1,28 @@
+name: tests
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  pytest:
+    # Optional JSON runner label(s); unset uses standard hosted Linux.
+    runs-on: ${{ fromJSON(vars.REPO_TUTOR_RUNNER || '"ubuntu-latest"') }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      max-parallel: 1
+      matrix:
+        python-version: ['3.11', '3.13', '3.14']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: false
+          python-version: ${{ matrix.python-version }}
+      - run: uv venv --python '${{ matrix.python-version }}' .venv
+      - run: uv pip install --python .venv/bin/python -e '.[dev]'
+      - run: .venv/bin/ruff check src tests
+      - run: .venv/bin/pytest -q
+      - run: .venv/bin/python -m build

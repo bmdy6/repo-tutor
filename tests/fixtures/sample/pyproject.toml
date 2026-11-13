@@ -1,0 +1,5 @@
+[project]
+name = "sample"
+version = "1"
+[project.scripts]
+sample-demo = "demo.web:cli"
