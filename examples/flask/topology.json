@@ -1334,6 +1334,247 @@
   ],
   "flows": [
     {
+      "entry": "src/flask/app.py::Flask.__init__@226",
+      "nodes": [
+        "src/flask/app.py::Flask.__init__@226",
+        "src/flask/cli.py::AppGroup@405"
+      ],
+      "edges": [
+        {
+          "source": "src/flask/app.py::Flask.__init__@226",
+          "target": "src/flask/cli.py::AppGroup@405",
+          "kind": "call",
+          "location": "src/flask/app.py:256"
+        }
+      ],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/app.py::Flask.__call__@1529",
+      "nodes": [
+        "src/flask/app.py::Flask.__call__@1529",
+        "src/flask/app.py::Flask.async_to_sync@980",
+        "src/flask/app.py::Flask.dispatch_request@879",
+        "src/flask/app.py::Flask.ensure_sync@966",
+        "src/flask/app.py::Flask.finalize_request@922",
+        "src/flask/app.py::Flask.full_dispatch_request@904",
+        "src/flask/app.py::Flask.handle_exception@811",
+        "src/flask/app.py::Flask.handle_http_exception@744",
+        "src/flask/app.py::Flask.handle_user_exception@779",
+        "src/flask/app.py::Flask.log_exception@864",
+        "src/flask/app.py::Flask.make_default_options_response@953",
+        "src/flask/app.py::Flask.make_response@1129",
+        "src/flask/app.py::Flask.preprocess_request@1271",
+        "src/flask/app.py::Flask.process_response@1298",
+        "src/flask/app.py::Flask.raise_routing_exception@478",
+        "src/flask/app.py::Flask.request_context@1407",
+        "src/flask/app.py::Flask.wsgi_app@1479",
+        "src/flask/ctx.py::RequestContext@287",
+        "src/flask/debughelpers.py::FormDataRoutingRedirect@50"
+      ],
+      "edges": [
+        {
+          "source": "src/flask/app.py::Flask.__call__@1529",
+          "target": "src/flask/app.py::Flask.wsgi_app@1479",
+          "kind": "call",
+          "location": "src/flask/app.py:1536"
+        },
+        {
+          "source": "src/flask/app.py::Flask.dispatch_request@879",
+          "target": "src/flask/app.py::Flask.ensure_sync@966",
+          "kind": "call",
+          "location": "src/flask/app.py:902"
+        },
+        {
+          "source": "src/flask/app.py::Flask.dispatch_request@879",
+          "target": "src/flask/app.py::Flask.make_default_options_response@953",
+          "kind": "call",
+          "location": "src/flask/app.py:899"
+        },
+        {
+          "source": "src/flask/app.py::Flask.dispatch_request@879",
+          "target": "src/flask/app.py::Flask.raise_routing_exception@478",
+          "kind": "call",
+          "location": "src/flask/app.py:891"
+        },
+        {
+          "source": "src/flask/app.py::Flask.ensure_sync@966",
+          "target": "src/flask/app.py::Flask.async_to_sync@980",
+          "kind": "call",
+          "location": "src/flask/app.py:976"
+        },
+        {
+          "source": "src/flask/app.py::Flask.finalize_request@922",
+          "target": "src/flask/app.py::Flask.make_response@1129",
+          "kind": "call",
+          "location": "src/flask/app.py:939"
+        },
+        {
+          "source": "src/flask/app.py::Flask.finalize_request@922",
+          "target": "src/flask/app.py::Flask.process_response@1298",
+          "kind": "call",
+          "location": "src/flask/app.py:941"
+        },
+        {
+          "source": "src/flask/app.py::Flask.full_dispatch_request@904",
+          "target": "src/flask/app.py::Flask.dispatch_request@879",
+          "kind": "call",
+          "location": "src/flask/app.py:917"
+        },
+        {
+          "source": "src/flask/app.py::Flask.full_dispatch_request@904",
+          "target": "src/flask/app.py::Flask.finalize_request@922",
+          "kind": "call",
+          "location": "src/flask/app.py:920"
+        },
+        {
+          "source": "src/flask/app.py::Flask.full_dispatch_request@904",
+          "target": "src/flask/app.py::Flask.handle_user_exception@779",
+          "kind": "call",
+          "location": "src/flask/app.py:919"
+        },
+        {
+          "source": "src/flask/app.py::Flask.full_dispatch_request@904",
+          "target": "src/flask/app.py::Flask.preprocess_request@1271",
+          "kind": "call",
+          "location": "src/flask/app.py:915"
+        },
+        {
+          "source": "src/flask/app.py::Flask.handle_exception@811",
+          "target": "src/flask/app.py::Flask.ensure_sync@966",
+          "kind": "call",
+          "location": "src/flask/app.py:860"
+        },
+        {
+          "source": "src/flask/app.py::Flask.handle_exception@811",
+          "target": "src/flask/app.py::Flask.finalize_request@922",
+          "kind": "call",
+          "location": "src/flask/app.py:862"
+        },
+        {
+          "source": "src/flask/app.py::Flask.handle_exception@811",
+          "target": "src/flask/app.py::Flask.log_exception@864",
+          "kind": "call",
+          "location": "src/flask/app.py:854"
+        },
+        {
+          "source": "src/flask/app.py::Flask.handle_http_exception@744",
+          "target": "src/flask/app.py::Flask.ensure_sync@966",
+          "kind": "call",
+          "location": "src/flask/app.py:777"
+        },
+        {
+          "source": "src/flask/app.py::Flask.handle_user_exception@779",
+          "target": "src/flask/app.py::Flask.ensure_sync@966",
+          "kind": "call",
+          "location": "src/flask/app.py:809"
+        },
+        {
+          "source": "src/flask/app.py::Flask.handle_user_exception@779",
+          "target": "src/flask/app.py::Flask.handle_http_exception@744",
+          "kind": "call",
+          "location": "src/flask/app.py:802"
+        },
+        {
+          "source": "src/flask/app.py::Flask.preprocess_request@1271",
+          "target": "src/flask/app.py::Flask.ensure_sync@966",
+          "kind": "call",
+          "location": "src/flask/app.py:1291"
+        },
+        {
+          "source": "src/flask/app.py::Flask.process_response@1298",
+          "target": "src/flask/app.py::Flask.ensure_sync@966",
+          "kind": "call",
+          "location": "src/flask/app.py:1314"
+        },
+        {
+          "source": "src/flask/app.py::Flask.process_response@1298",
+          "target": "src/flask/app.py::Flask.ensure_sync@966",
+          "kind": "call",
+          "location": "src/flask/app.py:1319"
+        },
+        {
+          "source": "src/flask/app.py::Flask.raise_routing_exception@478",
+          "target": "src/flask/debughelpers.py::FormDataRoutingRedirect@50",
+          "kind": "call",
+          "location": "src/flask/app.py:504"
+        },
+        {
+          "source": "src/flask/app.py::Flask.request_context@1407",
+          "target": "src/flask/ctx.py::RequestContext@287",
+          "kind": "call",
+          "location": "src/flask/app.py:1421"
+        },
+        {
+          "source": "src/flask/app.py::Flask.wsgi_app@1479",
+          "target": "src/flask/app.py::Flask.full_dispatch_request@904",
+          "kind": "call",
+          "location": "src/flask/app.py:1511"
+        },
+        {
+          "source": "src/flask/app.py::Flask.wsgi_app@1479",
+          "target": "src/flask/app.py::Flask.handle_exception@811",
+          "kind": "call",
+          "location": "src/flask/app.py:1514"
+        },
+        {
+          "source": "src/flask/app.py::Flask.wsgi_app@1479",
+          "target": "src/flask/app.py::Flask.request_context@1407",
+          "kind": "call",
+          "location": "src/flask/app.py:1506"
+        }
+      ],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/blueprints.py::Blueprint.__init__@19",
+      "nodes": [
+        "src/flask/blueprints.py::Blueprint.__init__@19",
+        "src/flask/cli.py::AppGroup@405"
+      ],
+      "edges": [
+        {
+          "source": "src/flask/blueprints.py::Blueprint.__init__@19",
+          "target": "src/flask/cli.py::AppGroup@405",
+          "kind": "call",
+          "location": "src/flask/blueprints.py:49"
+        }
+      ],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/cli.py::ScriptInfo.__init__@305",
+      "nodes": [
+        "src/flask/cli.py::ScriptInfo.__init__@305",
+        "src/flask/helpers.py::get_load_dotenv@36"
+      ],
+      "edges": [
+        {
+          "source": "src/flask/cli.py::ScriptInfo.__init__@305",
+          "target": "src/flask/helpers.py::get_load_dotenv@36",
+          "kind": "call",
+          "location": "src/flask/cli.py:322"
+        }
+      ],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/cli.py::FlaskGroup.__init__@563",
+      "nodes": [
+        "src/flask/cli.py::FlaskGroup.__init__@563"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/cli.py::CertParamType.__init__@796",
+      "nodes": [
+        "src/flask/cli.py::CertParamType.__init__@796"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
       "entry": "src/flask/cli.py::run_command@943",
       "nodes": [
         "src/flask/cli.py::CertParamType@788",
@@ -1414,6 +1655,225 @@
           "location": "src/flask/cli.py:1135"
         }
       ],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/config.py::ConfigAttribute.__init__@23",
+      "nodes": [
+        "src/flask/config.py::ConfigAttribute.__init__@23"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/config.py::Config.__init__@94",
+      "nodes": [
+        "src/flask/config.py::Config.__init__@94"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/ctx.py::AppContext.__init__@245",
+      "nodes": [
+        "src/flask/ctx.py::AppContext.__init__@245"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/ctx.py::RequestContext.__init__@309",
+      "nodes": [
+        "src/flask/ctx.py::RequestContext.__init__@309"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/debughelpers.py::DebugFilesKeyError.__init__@28",
+      "nodes": [
+        "src/flask/debughelpers.py::DebugFilesKeyError.__init__@28"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/debughelpers.py::FormDataRoutingRedirect.__init__@57",
+      "nodes": [
+        "src/flask/debughelpers.py::FormDataRoutingRedirect.__init__@57"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/json/provider.py::JSONProvider.__init__@38",
+      "nodes": [
+        "src/flask/json/provider.py::JSONProvider.__init__@38"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/json/tag.py::JSONTag.__init__@69",
+      "nodes": [
+        "src/flask/json/tag.py::JSONTag.__init__@69"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/json/tag.py::TaggedJSONSerializer.__init__@249",
+      "nodes": [
+        "src/flask/json/tag.py::TaggedJSONSerializer.__init__@249",
+        "src/flask/json/tag.py::TaggedJSONSerializer.register@256"
+      ],
+      "edges": [
+        {
+          "source": "src/flask/json/tag.py::TaggedJSONSerializer.__init__@249",
+          "target": "src/flask/json/tag.py::TaggedJSONSerializer.register@256",
+          "kind": "call",
+          "location": "src/flask/json/tag.py:254"
+        }
+      ],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/sansio/app.py::App.__init__@282",
+      "nodes": [
+        "src/flask/helpers.py::get_debug_flag@28",
+        "src/flask/sansio/app.py::App.__init__@282",
+        "src/flask/sansio/app.py::App.auto_find_instance_path@510",
+        "src/flask/sansio/app.py::App.make_aborter@498",
+        "src/flask/sansio/app.py::App.make_config@482",
+        "src/flask/sansio/scaffold.py::_find_package_path@709",
+        "src/flask/sansio/scaffold.py::find_package@754"
+      ],
+      "edges": [
+        {
+          "source": "src/flask/sansio/app.py::App.__init__@282",
+          "target": "src/flask/sansio/app.py::App.auto_find_instance_path@510",
+          "kind": "call",
+          "location": "src/flask/sansio/app.py:304"
+        },
+        {
+          "source": "src/flask/sansio/app.py::App.__init__@282",
+          "target": "src/flask/sansio/app.py::App.make_aborter@498",
+          "kind": "call",
+          "location": "src/flask/sansio/app.py:327"
+        },
+        {
+          "source": "src/flask/sansio/app.py::App.__init__@282",
+          "target": "src/flask/sansio/app.py::App.make_config@482",
+          "kind": "call",
+          "location": "src/flask/sansio/app.py:319"
+        },
+        {
+          "source": "src/flask/sansio/app.py::App.auto_find_instance_path@510",
+          "target": "src/flask/sansio/scaffold.py::find_package@754",
+          "kind": "call",
+          "location": "src/flask/sansio/app.py:518"
+        },
+        {
+          "source": "src/flask/sansio/app.py::App.make_config@482",
+          "target": "src/flask/helpers.py::get_debug_flag@28",
+          "kind": "call",
+          "location": "src/flask/sansio/app.py:495"
+        },
+        {
+          "source": "src/flask/sansio/scaffold.py::find_package@754",
+          "target": "src/flask/sansio/scaffold.py::_find_package_path@709",
+          "kind": "call",
+          "location": "src/flask/sansio/scaffold.py:767"
+        }
+      ],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/sansio/blueprints.py::BlueprintSetupState.__init__@41",
+      "nodes": [
+        "src/flask/sansio/blueprints.py::BlueprintSetupState.__init__@41"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/sansio/blueprints.py::Blueprint.__init__@174",
+      "nodes": [
+        "src/flask/sansio/blueprints.py::Blueprint.__init__@174"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/sansio/scaffold.py::Scaffold.__init__@75",
+      "nodes": [
+        "src/flask/helpers.py::get_root_path@577",
+        "src/flask/sansio/scaffold.py::Scaffold.__init__@75"
+      ],
+      "edges": [
+        {
+          "source": "src/flask/sansio/scaffold.py::Scaffold.__init__@75",
+          "target": "src/flask/helpers.py::get_root_path@577",
+          "kind": "call",
+          "location": "src/flask/sansio/scaffold.py:96"
+        }
+      ],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/sessions.py::SecureCookieSession.__init__@74",
+      "nodes": [
+        "src/flask/sessions.py::SecureCookieSession.__init__@74"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/templating.py::Environment.__init__@45",
+      "nodes": [
+        "src/flask/templating.py::Environment.__init__@45"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/templating.py::DispatchingJinjaLoader.__init__@57",
+      "nodes": [
+        "src/flask/templating.py::DispatchingJinjaLoader.__init__@57"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/testing.py::EnvironBuilder.__init__@49",
+      "nodes": [
+        "src/flask/testing.py::EnvironBuilder.__init__@49"
+      ],
+      "edges": [],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/testing.py::FlaskClient.__init__@125",
+      "nodes": [
+        "src/flask/testing.py::FlaskClient.__init__@125",
+        "src/flask/testing.py::_get_werkzeug_version@100"
+      ],
+      "edges": [
+        {
+          "source": "src/flask/testing.py::FlaskClient.__init__@125",
+          "target": "src/flask/testing.py::_get_werkzeug_version@100",
+          "kind": "call",
+          "location": "src/flask/testing.py:132"
+        }
+      ],
+      "truncated": false
+    },
+    {
+      "entry": "src/flask/testing.py::FlaskCliRunner.__init__@271",
+      "nodes": [
+        "src/flask/testing.py::FlaskCliRunner.__init__@271"
+      ],
+      "edges": [],
       "truncated": false
     }
   ],

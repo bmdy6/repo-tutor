@@ -102,6 +102,15 @@ def scan(root: str | Path, excludes=DEFAULT_EXCLUDES, max_file_bytes: int = 1_00
                     if isinstance(obj, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
                         qual = prefix + obj.name
                         entry = []
+                        if (isinstance(obj, (ast.FunctionDef, ast.AsyncFunctionDef))
+                            and isinstance(objects.get(parent), ast.ClassDef) and prefix and all(
+                            not part.startswith('_') for part in prefix.rstrip('.').split('.'))):
+                            if obj.name == '__init__':
+                                entry.append('constructor')
+                            arguments = {a.arg for a in obj.args.args + obj.args.posonlyargs}
+                            if obj.name == '__call__' and ({'environ', 'start_response'} <= arguments
+                                                         or {'scope', 'receive', 'send'} <= arguments):
+                                entry.append('protocol')
                         for dec in obj.decorator_list:
                             fn = dec.func if isinstance(dec, ast.Call) else dec
                             tail = ast.unparse(fn).split('.')[-1]

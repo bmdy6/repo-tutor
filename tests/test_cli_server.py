@@ -54,3 +54,29 @@ def test_real_stdio_mcp_tools_are_read_only(tmp_path):
 def test_invalid_inventory_returns_input_error(tmp_path):
     (tmp_path / 'scan.json').write_text('{}')
     assert main(['verify', str(FIXTURE), '--out', str(tmp_path)]) == 2
+
+
+def test_cli_selected_overview_then_resume_without_extra_calls(tmp_path, monkeypatch):
+    model = FakeModel()
+    monkeypatch.setattr('repo_tutor.cli.ModelClient', lambda *args: model)
+    out = tmp_path / 'course'
+    args = ['all', str(FIXTURE), '--out', str(out)]
+    assert main([*args, '--lessons', '00']) == 1
+    assert (out / 'lessons/00.md').exists()
+    assert model.calls == 2
+    assert main(args) == 0
+    calls = model.calls
+    assert main(args) == 0
+    assert model.calls == calls
+
+
+def test_cli_rejects_old_plan_without_request(tmp_path, monkeypatch):
+    from repo_tutor.course import fingerprint
+    from repo_tutor.scanner import scan
+    model = FakeModel()
+    monkeypatch.setattr('repo_tutor.cli.ModelClient', lambda *args: model)
+    inv = scan(FIXTURE)
+    (tmp_path / 'scan.json').write_text(json.dumps(inv))
+    (tmp_path / 'plan.json').write_text(json.dumps({'schema_version': 1, 'inventory_sha256': fingerprint(inv)}))
+    assert main(['plan', str(FIXTURE), '--out', str(tmp_path)]) == 2
+    assert model.calls == 0
