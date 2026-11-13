@@ -1,0 +1,206 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/bmdy6/repo-tutor/scan.schema.json",
+  "title": "repo-tutor AST inventory",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "files",
+    "nodes",
+    "edges",
+    "unresolved",
+    "diagnostics"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "qualname",
+          "module",
+          "path",
+          "line",
+          "end_line",
+          "location",
+          "kind",
+          "docstring",
+          "public",
+          "entry",
+          "parent"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "qualname": {
+            "type": "string"
+          },
+          "module": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string",
+            "pattern": "^.+\\.py:[1-9][0-9]*$"
+          },
+          "line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "end_line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "kind": {
+            "enum": [
+              "module",
+              "class",
+              "function",
+              "entry"
+            ]
+          },
+          "docstring": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "public": {
+            "type": "boolean"
+          },
+          "entry": {
+            "type": "array",
+            "items": {
+              "enum": [
+                "route",
+                "cli",
+                "main",
+                "project-script"
+              ]
+            },
+            "uniqueItems": true
+          },
+          "parent": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "module",
+          "sha256",
+          "lines"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "module": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "target",
+          "kind",
+          "location"
+        ],
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "target": {
+            "type": "string"
+          },
+          "kind": {
+            "enum": [
+              "call",
+              "import",
+              "inherit"
+            ]
+          },
+          "location": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "unresolved": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "expression",
+          "location"
+        ],
+        "properties": {
+          "source": {
+            "type": "string"
+          },
+          "expression": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "diagnostics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "path",
+          "message"
+        ],
+        "properties": {
+          "path": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
