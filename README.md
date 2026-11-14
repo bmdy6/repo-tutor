@@ -1,6 +1,10 @@
+# repo-tutor
+
+**把陌生的 Python 代码库变成带源码出处的新人课程。**
+
 Turn unfamiliar Python repositories into source-linked onboarding courses.
 
-# repo-tutor
+[分步使用](#分步使用) · [配置](#配置) · [MCP 接入](#mcp只读接入) · [Flask 演示](#flask-演示) · [已知限制](#已知限制)
 
 给刚接手 Python 代码库的新人，以及要反复讲解源码的维护者：先看系统做什么、入口在哪里，再沿一次调用理解模块职责。程序按模块和入口可达子图分课，模型写连贯讲解，每个段落保留 `path:line`，并检查漏讲、引用、图节点和源码漂移。
 
