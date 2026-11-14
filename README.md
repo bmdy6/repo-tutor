@@ -51,7 +51,7 @@ JSON Schema 在 [scan.schema.json](src/repo_tutor/scan.schema.json)。`topology.
 repo-tutor write /path/to/python-repo --out course --lessons 00,01,02
 ```
 
-未生成的关键节点仍列入漏讲清单。重跑 `all` 复用匹配的大纲，跳过已有课文。第 1 轮 schema v1 计划不能续用，请用新的输出目录重新扫描、规划；修改分组配置也用新目录。
+未生成的关键节点仍列入漏讲清单。重跑 `all` 复用匹配的大纲，跳过已有课文。旧版 schema v1 的计划不能续用，请用新的输出目录重新扫描、规划；修改分组配置也用新目录。
 
 退出码：`0` 成功，`1` 校验未通过，`2` 输入、配置或生成失败。
 
@@ -125,6 +125,6 @@ python -m build
 fixture 模拟 CLI、路由、相对导入、环和公开/私有符号；只作 AST 输入，不执行其中的假装饰器。
 模型生成用假模型测试。架构与失败恢复说明见 [docs/architecture.md](docs/architecture.md)。
 
-CI 使用 GitHub 托管 Ubuntu（Python 3.11 / 3.13 / 3.14）。本轮账号消费限制使托管任务无法启动，不能视为 CI 通过；本地假模型测试、ruff 和构建已执行。没有注册自托管 runner，仓库保持原可见性。
+CI 使用 GitHub 托管 Ubuntu（Python 3.11 / 3.13 / 3.14）。托管任务暂未运行，不能视为 CI 通过；本地假模型测试、ruff 和构建已执行。
 
 MIT License。Flask 的许可另见 [FLASK-LICENSE.txt](examples/flask/FLASK-LICENSE.txt)。
