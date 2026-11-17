@@ -36,6 +36,11 @@ repo-tutor write /path/to/python-repo --out course
 repo-tutor verify /path/to/python-repo --out course
 ```
 
+<!-- readme-illustrate:pipeline -->
+<img src="docs/images/pipeline.png" alt="repo-tutor 四步流程：scan、plan、write、verify，以及 Flask 演示中每一步的结果数字" width="760">
+
+示意图：四个子命令各做什么；数字来自 Flask 3.1.2 演示的完整课程校验快照。
+<!-- /readme-illustrate:pipeline -->
 `scan` 输出 AST 节点、docstring、import/调用/继承关系、入口、未解析调用和文件 SHA256。
 JSON Schema 在 [scan.schema.json](src/repo_tutor/scan.schema.json)。`topology.json` 包含依赖顺序、循环依赖组，以及从入口沿静态边得到的有界可达流程。
 
@@ -100,6 +105,11 @@ MCP 校验针对当前源码；CLI 另有扫描快照漂移检查。此轮未通
 
 固定 [pallets/flask 3.1.2](https://github.com/pallets/flask/releases/tag/3.1.2)，24 个生产 Python 文件、439 个节点，包含 348 个关键节点（新增构造与协议入口也纳入覆盖）。
 演示把每课软上限设为 48，得到第 0 课 + 20 节功能课；真实调用和机械校验结果见 [演示说明](examples/flask/README.md)。
+<!-- readme-illustrate:flask-lesson -->
+<img src="docs/images/flask-lesson.png" alt="Flask 第 10 课节选：每段讲解后面跟着符号名和 src/flask/app.py 的行号" width="760">
+
+真实课文节选（第 10 课第 3–5 段）：每段讲解后跟源码位置；截图把链接地址显示在符号名后面。
+<!-- /readme-illustrate:flask-lesson -->
 仓库保留 00、10、17 三课，样例子集和完整课程的校验快照分开记录。完整真实输出保存在演示任务目录，仓库中的速查表覆盖不能代替讲解质量审查。
 
 ## 已知限制
